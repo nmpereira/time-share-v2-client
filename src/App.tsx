@@ -13,12 +13,11 @@ import ValidRoom from "./Pages/Room/ValidRoom";
 import DefaultRoom from "./Pages/DefaultRoom/DefaultRoom";
 import { roomName, tracker } from "../common/common";
 import { PublicRoom } from "./Pages/PublicRoom/PublicRoom";
-import { HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from "react-helmet-async";
 import HelmetTags from "./helmet";
 
 
 const App = (): JSX.Element => {
-
 	const [globalUsersConnected, setGlobalUsersConnected] = useState<number>(0);
 	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [isBreak, setIsBreak] = useState<boolean>(false);
@@ -58,6 +57,8 @@ const App = (): JSX.Element => {
 		setIsConnected(false);
 	};
 
+	const helmetContext = {}
+
 	useEffect(() => {
 		socket.on("globalUsers", onGlobalUsers);
 		socket.on("connect", onConnect);
@@ -77,124 +78,121 @@ const App = (): JSX.Element => {
 	}, []);
 
 	return (
-		<HelmetProvider>
-		
-		<ThemeProvider theme={{ themeGroup, setThemeGroup }}>
-			
-				<HelmetTags 
-			title={userName} 
-			description={roomName} 
-			imageCard="https://raw.githubusercontent.com/CommunityFocus/cf-frontend/main/public/images/communityFocus-icon-meta.png"
-			/> 
-			<UsernameContext.Provider
-				value={useMemo(
-					() => ({
-						userName,
-						setUserName,
-					}),
-					[userName, setUserName]
-				)}
-			>
-				<ModalContext.Provider
+		<HelmetProvider context={helmetContext}>
+			<ThemeProvider theme={{ themeGroup, setThemeGroup }}>
+				<UsernameContext.Provider
 					value={useMemo(
 						() => ({
-							isUsernamModalOpen,
-							setIsUsernameModalOpen,
+							userName,
+							setUserName,
 						}),
-						[isUsernamModalOpen, setIsUsernameModalOpen]
+						[userName, setUserName]
 					)}
 				>
-					<Tooltip id="my-tooltip" style={{ zIndex: 99 }} />
-					<BrowserRouter>
-						<Routes>
-							<Route
-								path="/"
-								element={
-									<LandingPage
-										globalUsersConnected={
-											globalUsersConnected
-										}
-										isBreak={isBreak}
-										isConnected={isConnected}
-									/>
-								}
-							/>
+				<HelmetTags
+					userName={userName}
+					roomName={roomName}
+				/>
+					<ModalContext.Provider
+						value={useMemo(
+							() => ({
+								isUsernamModalOpen,
+								setIsUsernameModalOpen,
+							}),
+							[isUsernamModalOpen, setIsUsernameModalOpen]
+						)}
+					>
+						<Tooltip id="my-tooltip" style={{ zIndex: 99 }} />
+						<BrowserRouter>
+							<Routes>
+								<Route
+									path="/"
+									element={
+										<LandingPage
+											globalUsersConnected={
+												globalUsersConnected
+											}
+											isBreak={isBreak}
+											isConnected={isConnected}
+										/>
+									}
+								/>
 
-							<Route
-								path="/contributors"
-								element={
-									<ContributorsPage
-										globalUsersConnected={
-											globalUsersConnected
-										}
-										isBreak={isBreak}
-										isConnected={isConnected}
-									/>
-								}
-							/>
+								<Route
+									path="/contributors"
+									element={
+										<ContributorsPage
+											globalUsersConnected={
+												globalUsersConnected
+											}
+											isBreak={isBreak}
+											isConnected={isConnected}
+										/>
+									}
+								/>
 
-							<Route
-								path="admin"
-								element={
-									<PublicRoom
-										roomName="admin"
-										userName={userName}
-										setIsConnected={setIsConnected}
-										isBreak={isBreak}
-										isConnected={isConnected}
-										globalUsersConnected={
-											globalUsersConnected
-										}
-									/>
-								}
-							/>
-							<Route
-								path="public-timers"
-								element={
-									<PublicRoom
-										roomName="public-timers"
-										userName={userName}
-										setIsConnected={setIsConnected}
-										isBreak={isBreak}
-										isConnected={isConnected}
-										globalUsersConnected={
-											globalUsersConnected
-										}
-									/>
-								}
-							/>
+								<Route
+									path="admin"
+									element={
+										<PublicRoom
+											roomName="admin"
+											userName={userName}
+											setIsConnected={setIsConnected}
+											isBreak={isBreak}
+											isConnected={isConnected}
+											globalUsersConnected={
+												globalUsersConnected
+											}
+										/>
+									}
+								/>
+								<Route
+									path="public-timers"
+									element={
+										<PublicRoom
+											roomName="public-timers"
+											userName={userName}
+											setIsConnected={setIsConnected}
+											isBreak={isBreak}
+											isConnected={isConnected}
+											globalUsersConnected={
+												globalUsersConnected
+											}
+										/>
+									}
+								/>
 
-							<Route
-								path="/:room"
-								element={
-									<ValidRoom
-										globalUsersConnected={
-											globalUsersConnected
-										}
-										isBreak={isBreak}
-										setIsBreak={setIsBreak}
-										isConnected={isConnected}
-										setIsConnected={setIsConnected}
-									/>
-								}
-							/>
-							<Route
-								path="*"
-								element={
-									<DefaultRoom
-										globalUsersConnected={
-											globalUsersConnected
-										}
-										isBreak={isBreak}
-										isConnected={isConnected}
-									/>
-								}
-							/>
-						</Routes>
-					</BrowserRouter>
-				</ModalContext.Provider>
-			</UsernameContext.Provider>
-		</ThemeProvider>
+								<Route
+									path="/:room"
+									element={
+										<ValidRoom
+											globalUsersConnected={
+												globalUsersConnected
+											}
+											isBreak={isBreak}
+											setIsBreak={setIsBreak}
+											isConnected={isConnected}
+											setIsConnected={setIsConnected}
+										/>
+									}
+								/>
+								<Route
+									path="*"
+									element={
+										<DefaultRoom
+											globalUsersConnected={
+												globalUsersConnected
+											}
+											isBreak={isBreak}
+											isConnected={isConnected}
+										/>
+									}
+								/>
+							</Routes>
+						</BrowserRouter>
+					</ModalContext.Provider>
+				</UsernameContext.Provider>
+			</ThemeProvider>
 		</HelmetProvider>
 	);
 };
